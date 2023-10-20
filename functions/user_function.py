@@ -9,8 +9,6 @@ from database.Database import Database as db
 from aiogram import Bot
 
 async def welcome(message: types.Message, state: FSMContext):
-    # await db().add_new_admin(5823260569, "MaximSummer")
-    # await db().add_new_admin(1610007895, "iliaul2")
     user_id = message.from_user.id
     username = message.from_user.username
     await state.update_data(user_id=user_id)
