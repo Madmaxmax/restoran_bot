@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<button onclick="sendMessage()">Отправить сообщение</button>
+
+<script>
+    function sendMessage() {
+        $.ajax({
+            url: "/webhook",
+            type: "POST",
+            data: JSON.stringify({
+                source: "YOUR_WEBSITE",
+                action: "send_message",
+                chat_id: "944439582",
+                message: "Привет от веб-сайта!"
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

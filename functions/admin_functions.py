@@ -1,11 +1,13 @@
 import asyncio
 import random
 import string
-import keyboard as keyboard
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from aiogram.types import InlineKeyboardButton, WebAppInfo
+
 from database.Database import Database as db
 from aiogram import Bot
+from functions.service_function import generate_random_code
 
 
 async def admin_menu(message: types.Message = None, call: types.CallbackQuery = None, state: FSMContext = None):
@@ -37,10 +39,11 @@ async def admin_menu(message: types.Message = None, call: types.CallbackQuery = 
         keyboard.add(button(text='Добавить пользователя', callback_data='ad_add_user'))
         keyboard.add(button(text='Удалить пользователя', callback_data='ad_delete_user'))
         keyboard.add(button(text='Повысить ранг пользователя', callback_data='ad_user_buff'))
-
+        keyboard.add(button(text="Заказы", url='http://188.234.213.25:5000/orders'))
+        keyboard.add(button(text="Курьеры", url='http://188.234.213.25:5000/view_couriers'),
+                        button(text="Рестораны", url='http://188.234.213.25:5000/view_customers'))
         # keyboard.add(button(text='Статистика', callback_data='statistic'))
-        keyboard.add(button(text='Администраторы', callback_data='ad_admins'),
-                     )
+        keyboard.add(button(text='Администраторы', callback_data='ad_admins'))
         await delete()
         await answer(msg, reply_markup=keyboard)
 
@@ -121,6 +124,10 @@ async def delete_user_text(message: types.Message, state: FSMContext):
     keyboard.add(button(text='Добавить пользователя', callback_data='ad_add_user'))
     keyboard.add(button(text='Удалить пользователя', callback_data='ad_delete_user'))
     keyboard.add(button(text='Повысить ранг пользователя', callback_data='ad_user_buff'))
+    keyboard.add(button(text="Заказы", url='http://188.234.213.25:5000/orders'))
+    keyboard.add(button(text="Курьеры", url='http://188.234.213.25:5000/view_couriers'),
+                 button(text="Рестораны", url='http://188.234.213.25:5000/view_customers'))
+    # keyboard.add(button(text='Статистика', callback_data='statistic'))
     keyboard.add(button(text='Администраторы', callback_data='ad_admins'))
     await message.delete()
     await message.answer(msg, reply_markup=keyboard)
@@ -164,10 +171,6 @@ async def user_buff_text(message: types.Message, state: FSMContext):
     await message.delete()
     await message.answer(msg, reply_markup=keyboard)
 
-async def generate_random_code():
-    characters = string.ascii_letters + string.digits
-    random_code = ''.join(random.choices(characters, k=10))
-    return random_code
 
 async def add_admin(call: types.CallbackQuery, state: FSMContext):
     bot_info = await call.bot.get_me()

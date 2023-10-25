@@ -1,5 +1,4 @@
 import logging
-
 import log
 from functools import partial
 from aiogram.dispatcher import FSMContext
@@ -41,7 +40,9 @@ def reg_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(partial(us_all_callback), state='*')
 
 
+
 async def us_all_states_handler(message: types.Message, state: FSMContext):
+    print(message.text)
     state_name = await state.get_state()
     if str(state_name)[:3] =="ad_":
         await ad_all_states_handler(message, state)
@@ -49,6 +50,9 @@ async def us_all_states_handler(message: types.Message, state: FSMContext):
     else:
         users_id = await db().get_user_id()
         if message.from_user.id not in users_id:
+            return
+        if message.text == 'Заказ':
+            await create_orders(call=types.CallbackQuery(message=message), state=state)
             return
         try:
             if 'delete_admin_text' in state_name:

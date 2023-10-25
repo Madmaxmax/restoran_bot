@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #bfdede;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        .orders-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .order {
+            max-width: calc(50% - 20px); /* 50% ширины, с учетом отступов */
+            min-width: 370px;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.54);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8.6px);
+            -webkit-backdrop-filter: blur(8.6px);
+        }
+
+        @media (max-width: 768px) {
+            .order {
+                max-width: 100%; /* На мобильных устройствах, блоки занимают всю ширину */
+                margin-right: 0;
+            }
+        }
+
+
+        .card-head {
+        }
+
+        .comment-block {
+            background-color: #f5f5f5; /* Цвет фона блока */
+            border: 1px solid #ddd; /* Граница блока */
+            border-radius: 5px; /* Скругление углов */
+            padding: 10px; /* Отступы внутри блока */
+            margin: 10px 0; /* Внешние отступы блока */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень для блока */
+        }
+
+        .order hr {
+        margin-top: 1px;
+        }
+
+        .Price {
+        text-align: right;
+        margin-right: 0px;
+        }
+
+        .material-icons {
+            font-size: 20px;
+        }
+
+        .title-head {
+            font-size: 23px;
+        }
+        .title {
+            font-size: 23px;
+        }
+        .order-id, .order-type {
+            color: #635f5ff4;
+        }
+        .order-type {
+            color: #327f34;
+        }
+        .Restaurant {
+            font-size: 30px;
+        }
+        .my-card {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 1.2s ease-in-out; /* Добавляем анимацию */
+        }
+
+        .my-card.visible {
+            max-height: 1000px; /* Максимальная высота для анимации */
+        }
+        .hidden {
+            display: none; /* Скрываем элементы по умолчанию */
+        }
+
+        .open-button {
+            background-color: #0074c3; /* Цвет фона кнопки */
+            color: #fff; /* Цвет текста */
+            text-decoration: none; /* Убираем подчеркивание у ссылки */
+            padding: 2px 10px; /* Внутренние отступы кнопки */
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s; /* Плавные переходы цвета */
+        }
+
+        .open-button:hover {
+            background-color: #005a9f; /* Изменение цвета фона при наведении */
+        }
+
+        /* Стили для контейнера строки поиска */
+        .search-container {
+            text-align: center; /* Центрируем содержимое */
+            margin: 10px 0; /* Пространство сверху и снизу, по желанию */
+        }
+
+        /* Стили для поисковой строки */
+        #search-input {
+            width: 100%;
+            max-width: 400px; /* Ширина ограничена для лучшего визуального восприятия */
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 30px;
+            font-size: 16px;
+            background-color: #f4f4f4;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Кнопка для открытия/закрытия сайдбара на мобильных устройствах */
+        .sidebar-button {
+            background-color: #0074c3; /* Цвет фона кнопки */
+            color: #fff; /* Цвет текста */
+            text-decoration: none; /* Убираем подчеркивание у ссылки */
+            padding: 5px 5px 3px 5px; /* Внутренние отступы кнопки */
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            position: fixed;
+            top: 33px;
+            right: 20px;
+            z-index: 1; /* Размещаем кнопку поверх контента */
+            transition: background-color 0.3s, color 0.3s; /* Плавные переходы цвета */
+        }
+
+        .sidebar-button:hover {
+            background-color: #005a9f; /* Изменение цвета фона при наведении */
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px; /* Скрываем сайдбар за левой границей экрана */
+            width: 300px;
+            height: 80px;
+            background-color: #0074c3;
+            color: #fff;
+            transition: left 0.3s;
+            flex-direction: row; /* Горизонтальное расположение элементов */
+            align-items: center; /* Выравнивание элементов по вертикали по центру */
+            justify-content: space-between; /* Равномерное распределение элементов */
+        }
+
+        .sidebar.open {
+            left: 0; /* Показываем сайдбар при нажатии на кнопку */
+        }
+
+        .sidebar span {
+            margin-right: 20px; /* Расстояние между элементами */
+            font-size: 24px; /* Размер иконок */
+            color: #fff; /* Цвет иконок */
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Поиск">
+    </div>
+    <div class="orders-container">
+    </div>
+
+
+    <!-- Добавьте другие блоки данных как необходимо -->
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let data; // Объявляем переменную data в глобальной области видимости
+    function createOrder(orderData) {
+        const orderContainer = document.querySelector('.orders-container');
+        const orderElement = document.createElement('div');
+        orderElement.className = 'order';
+
+        const titleHead = document.createElement('div');
+        titleHead.className = 'title-head';
+        titleHead.innerHTML = `
+            <span class="order-id">#${orderData[0]}</span>
+            <span class="order-type">${orderData[2]}</span>
+        `;
+        orderElement.appendChild(titleHead);
+        orderElement.appendChild(document.createElement('hr'));
+
+        const cardHead = document.createElement('div');
+        cardHead.className = 'card-head';
+        const title1 = document.createElement('div');
+        title1.className = 'title';
+        title1.innerHTML = `
+            <i class="material-icons">restaurant</i>
+            <span class="Restaurant">${orderData[4]}</span>
+        `;
+        const title2 = document.createElement('div');
+        title2.className = 'title';
+        title2.innerHTML = `╠@<span class="Price">${orderData[1]}</span>`;
+
+        const title3 = document.createElement('div');
+        title3.className = 'title';
+        title3.innerHTML = `╚Кол-во всех заказов: <span class="Courier">${orderData[3]}</span>`;
+        cardHead.appendChild(title1);
+        cardHead.appendChild(title2);
+        cardHead.appendChild(title3);
+        orderElement.appendChild(cardHead);
+        orderContainer.appendChild(orderElement);
+
+    }
+
+    function updateOrders() {
+        const searchTerm = $('#search-input').val().toLowerCase();
+        const orderContainer = document.querySelector('.orders-container');
+        const orders = orderContainer.querySelectorAll('.order');
+
+        orders.forEach((orderElement) => {
+            const orderText = orderElement.innerText.toLowerCase();
+            if (orderText.includes(searchTerm)) {
+                orderElement.style.display = 'block';
+            } else {
+                orderElement.style.display = 'none';
+            }
+        });
+    }
+
+    // Обработчик события ввода для поиска
+    $('#search-input').on('input', function () {
+        updateOrders();
+    });
+
+    $(document).ready(function() {
+        // Загрузка элементов из Flask
+        $.ajax({
+            type: "GET",
+            url: "/customers",
+            success: function(data) {
+                for (let i = 0; i < data.length; i++) {
+                    createOrder(data[i]);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
