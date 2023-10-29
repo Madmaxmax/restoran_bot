@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Apps</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -77,9 +77,6 @@
             color: #635f5ff4;
         }
         .order-type {
-            color: #327f34;
-        }
-        .Type {
             color: #327f34;
         }
         .Restaurant {
@@ -183,39 +180,13 @@
             color: #fff; /* Цвет иконок */
         }
 
-        .navigation {
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto; /* Центрирование по горизонтали */
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
 
-        .navigation a {
-            text-decoration: none;
-            max-width: 22%;
-            padding: 10px;
-            color: #0074c3; /* Цвет кнопок */
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            margin: 0 5px;
-        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="navigation">
-        <a href="/messages">Msg</a>
-        <a href="/orders">Apps</a>
-        <a href="/view_couriers">Couriers</a>
-        <a href="/view_customers">Customers</a>
-    </div>
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Поиск">
     </div>
@@ -238,8 +209,9 @@
         titleHead.className = 'title-head';
         titleHead.innerHTML = `
             <span class="order-id">#${orderData[0]}</span>
-            <span class="order-type">${orderData[4]}
-                <i class="material-icons">currency_ruble</i>
+            <span class="order-type">${orderData[2]}</span>
+            <span class="Price">
+                ${orderData[6] === 1 ? '<i class="material-icons">check</i>' : '<i class="material-icons">close</i>'}
             </span>
         `;
         orderElement.appendChild(titleHead);
@@ -247,90 +219,30 @@
 
         const cardHead = document.createElement('div');
         cardHead.className = 'card-head';
-        const title11 = document.createElement('div');
-        title11.className = 'title';
-        title11.innerHTML = `Тип: <span class="Type">${orderData[10]}</span>`;
         const title1 = document.createElement('div');
         title1.className = 'title';
         title1.innerHTML = `
-            <i class="material-icons">restaurant</i>
-            <span class="Restaurant">${orderData[3]}</span>
+            @<span class="Restaurant">${orderData[1]}</span>
         `;
         const title2 = document.createElement('div');
         title2.className = 'title';
-        title2.innerHTML = `╠Курьер: <span class="Courier">${orderData[1]}</span>`;
+        title2.innerHTML = `╠Привилегия: <span class="Courier">${orderData[3]}</span>`;
+
         const title3 = document.createElement('div');
         title3.className = 'title';
-        title3.innerHTML = `╚Заказчик: <span class="Customer">${orderData[2]}</span>`;
+        title3.innerHTML = `╠Кол-во всех заказов: <span class="Courier">${orderData[4]}</span>`;
+
+        const title11 = document.createElement('div');
+        title11.className = 'title';
+        title11.innerHTML = `╚Кол-во выпол. заказов: <span class="Customer">${orderData[5]}</span>`;
+
         cardHead.appendChild(title1);
-        cardHead.appendChild(title11);
         cardHead.appendChild(title2);
         cardHead.appendChild(title3);
+        cardHead.appendChild(title11);
         orderElement.appendChild(cardHead);
-        orderElement.appendChild(document.createElement('br'));
-
-        const myCard = document.createElement('div');
-        myCard.className = 'my-card';
-        const title4 = document.createElement('div');
-        title4.className = 'title';
-        title4.innerHTML = `От: <span class="Point-a">${orderData[5]}</span>`;
-        const title5 = document.createElement('div');
-        title5.className = 'title';
-        title5.innerHTML = `До: <span class="Point-b">${orderData[6]}</span>`;
-        const commentBlock = document.createElement('div');
-        commentBlock.className = 'comment-block';
-        const title6 = document.createElement('div');
-        title6.className = 'title';
-        title6.innerHTML = `
-            <i class="material-icons">notes</i>
-            <span class="Commentary">${orderData[7]}</span>
-        `;
-        const title7 = document.createElement('div');
-        title7.className = 'title';
-        title7.innerHTML = `
-            <i class="material-icons">schedule_send</i>
-            <span class="Time-publish">${orderData[8]}</span>
-        `;
-        const title8 = document.createElement('div');
-        title8.className = 'title';
-        title8.innerHTML = `
-            <i class="material-icons">local_shipping</i>
-            <span class="Time-start">${orderData[9]}</span>
-        `;
-        // myCard.appendChild(title11);
-        myCard.appendChild(title4);
-        myCard.appendChild(title5);
-        myCard.appendChild(document.createElement('br'));
-        commentBlock.appendChild(title6);
-        myCard.appendChild(commentBlock);
-        myCard.appendChild(title7);
-        myCard.appendChild(title8);
-        orderElement.appendChild(myCard);
-
-        const openButton = document.createElement('a');
-        openButton.className = 'open-button';
-        openButton.href = '#';
-        openButton.textContent = 'Открыть';
-        orderElement.appendChild(openButton);
-
         orderContainer.appendChild(orderElement);
 
-
-        // Возвращаем ссылки на кнопку "Открыть" и блок "my-card" внутри созданного заказа
-        const openButtonOrder = orderElement.querySelector('.open-button');
-
-        openButton.addEventListener('click', function (e) {
-            e.preventDefault(); // Предотвращаем переход по ссылке
-
-            // Переключаем видимость блока my-card с добавлением/удалением класса "visible"
-            if (myCard.classList.contains('visible')) {
-                openButton.textContent = 'Открыть';
-                myCard.classList.remove('visible');
-            } else {
-                myCard.classList.add('visible');
-                openButton.textContent = 'Скрыть';
-            }
-        });
     }
 
     function updateOrders() {
@@ -357,7 +269,7 @@
         // Загрузка элементов из Flask
         $.ajax({
             type: "GET",
-            url: "/stat",
+            url: "/couriers",
             success: function(data) {
                 for (let i = 0; i < data.length; i++) {
                     createOrder(data[i]);

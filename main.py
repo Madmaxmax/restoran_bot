@@ -4,17 +4,20 @@ import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from database.Database import Database as db
 from log import logger, start_log
 from handlers.handlers import reg_handlers
 from dotenv import load_dotenv
 from flask_function.function import start_flask_app
 
+
 def reg_all_handlers(dp):
     reg_handlers(dp)
 
+
 load_dotenv()
 bot = Bot(token=os.getenv("BOT_TOKEN"), parse_mode=types.ParseMode.HTML)
+
+
 async def start_aiogram_bot():
     start_log()
     logger.info("Starting bot")
@@ -36,8 +39,10 @@ async def start_aiogram_bot():
         await dp.storage.wait_closed()
         await bot.session.close()
 
-def  run_bot():
+
+def run_bot():
     asyncio.run(start_aiogram_bot())
+
 
 if __name__ == "__main__":
     processes = []

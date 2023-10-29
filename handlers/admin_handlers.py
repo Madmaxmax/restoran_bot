@@ -17,13 +17,17 @@ async def ad_all_callback(call: types.CallbackQuery, state: FSMContext):
         await application_accepted(call, state)
         return
     elif 'cancel_order_' in call.data:
-        await cancel_order(call, state)
+        await courier_cancel_application(call, state)
         return
     elif 'successful_completion' in call.data:
         await successful_completion(call, state)
         return
+    elif 'create_exel_table_' in call.data:
+        await create_exel_table(call, state)
+        return
     else:
         name = call.data[3:]
+        print(name)
         await eval(f"{name}(call=call, state=state)")
         return
 

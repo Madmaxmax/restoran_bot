@@ -1,11 +1,10 @@
 import logging
-import log
 from functools import partial
-from aiogram.dispatcher import FSMContext
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher
 from functions.user_function import *
 from functions.admin_functions import *
 from handlers.admin_handlers import ad_all_states_handler, ad_all_callback
+
 
 async def us_all_callback(call: types.CallbackQuery, state: FSMContext):
     users_id = await db().get_user_id()
@@ -14,17 +13,26 @@ async def us_all_callback(call: types.CallbackQuery, state: FSMContext):
     elif 'customer_menu' in call.data:
         await customer_menu(call, state)
         return
-    elif'del_admin_' in call.data:
+    elif 'del_admin_' in call.data:
         await del_admin(call, state)
         return
     elif 'application_accepted_' in call.data:
         await application_accepted(call, state)
         return
-    elif 'cancel_order_' in call.data:
-        await cancel_order(call, state)
+    elif 'courier_cancel_application_' in call.data:
+        await courier_cancel_application(call, state)
+        return
+    elif 'cancel_application_' in call.data:
+        await cancel_application(call, state)
         return
     elif 'successful_completion_' in call.data:
         await successful_completion(call, state)
+        return
+    elif 'change_application_price' in call.data:
+        await change_application_price(call, state)
+        return
+    elif 'reverse_receiving_keyboard_text' in call.data:
+        await reverse_receiving_keyboard_text(call, state)
         return
     else:
         # name = call.data[3:]
@@ -40,11 +48,10 @@ def reg_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(partial(us_all_callback), state='*')
 
 
-
 async def us_all_states_handler(message: types.Message, state: FSMContext):
     print(message.text)
     state_name = await state.get_state()
-    if str(state_name)[:3] =="ad_":
+    if str(state_name)[:3] == "ad_":
         await ad_all_states_handler(message, state)
         return
     else:
@@ -52,7 +59,16 @@ async def us_all_states_handler(message: types.Message, state: FSMContext):
         if message.from_user.id not in users_id:
             return
         if message.text == 'Заказ':
-            await create_orders(call=types.CallbackQuery(message=message), state=state)
+            await create_orders(message=message, state=state)
+            return
+        if message.text == 'Закупка':
+            await create_purchase(message=message, state=state)
+            return
+        if message.text == 'Вы не принимаете заказы❌':
+            await reverse_receiving_keyboard_text(message=message, state=state)
+            return
+        if message.text == 'Вы принимаете заказы✅':
+            await reverse_receiving_keyboard_text(message=message, state=state)
             return
         try:
             if 'delete_admin_text' in state_name:
@@ -63,5 +79,3 @@ async def us_all_states_handler(message: types.Message, state: FSMContext):
                 return
         except Exception as e:
             logging.error('State_handler has Exception - %s' % e)
-
-

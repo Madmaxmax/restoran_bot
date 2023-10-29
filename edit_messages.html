@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Message</title>
+</head>
+<body>
+    <style>
+
+body {
+    font-family: "Arial, Helvetica, sans-serif";
+    background-color: #bfdede;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 100%;
+    padding: 10px;
+}
+
+.square-box {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 345px;
+    box-sizing: border-box; /* Учесть границу и заполнение внутри блока */
+}
+
+
+.dropdown {
+    margin-bottom: 10px;
+}
+
+.input-container {
+    margin-right: 22px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical; /* Разрешить вертикальную прокрутку */
+}
+
+select, textarea, button {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 11px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.navigation {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    margin: 0 auto; /* Центрирование по горизонтали */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 345px;
+    box-sizing: border-box; /* Учесть границу и заполнение внутри блока */
+}
+
+.navigation a {
+    text-decoration: none;
+    max-width: 22%;
+    padding: 10px;
+    color: #0074c3; /* Цвет кнопок */
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+    </style>
+    <div class="container">
+        <div class="navigation">
+            <a href="/messages">Msg</a>
+            <a href="/orders">Apps</a>
+            <a href="/view_couriers">Couriers</a>
+            <a href="/view_customers">Customers</a>
+        </div>
+        <div class="square-box">
+            <div class="dropdown">
+                <select id="message-selector">
+                    <option value="option1">Выберите сообщение</option>
+                </select>
+            </div>
+            <div class="input-container">
+                <textarea id="message-textarea" rows="10" placeholder="">
+                </textarea>
+                <button id="update_msg">Обновить</button>
+            </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Загрузка данных при загрузке страницы
+        loadMessages();
+
+        // Обработчик изменения выбора в селекторе
+        $('#message-selector').on('change', function () {
+            var selectedMessage = $(this).val();
+            if (selectedMessage !== "") {
+                $('#message-textarea').val(selectedMessage);
+            }
+        });
+        // Обработчик кнопки "Обновить"
+        $('#update_msg').on('click', function () {
+            var messageType = $('#message-selector option:selected').text(); // Получаем текст выбранного элемента
+            var messageText = $('#message-textarea').val();
+            updateMessage(messageType, messageText);
+        });
+    });
+
+    function loadMessages() {
+        $.ajax({
+            url: '/get_messages',
+            type: 'GET',
+            success: function (data) {
+                console.log("updateSelector")
+                var selector = $('#message-selector');
+                selector.empty();
+                selector.append($('<option value="">Выберите сообщение</option>'));
+                data.forEach(function (item) {
+                    var message = item[2]; // Третий индекс кортежа
+                    var messageType = item[1]; // Второй индекс кортежа
+                    selector.append($('<option value="' + message + '">' + messageType + '</option>'));
+                });
+            }
+        });
+    }
+    function updateMessage(messageType, messageText) {
+        $.ajax({
+            url: '/update_message',
+            type: 'POST',
+            data: {
+                'message_type': messageType,
+                'message_text': messageText
+            },
+            success: function (data) {
+                // Обработка успешного обновления
+            }
+        });
+        loadMessages();
+    }
+</script>
+</body>
+</html>
